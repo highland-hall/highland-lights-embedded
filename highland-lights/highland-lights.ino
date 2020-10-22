@@ -1,15 +1,34 @@
 #include "Arduino.h"
-#include <FastLED.h>
 #include "LightController.hpp"
 #include <cstdint>
 highland::LightController controller;
+// CLEDController* c;
+// CLEDController* c2;
+// CRGB* l = nullptr;
+// CRGB* l2 = nullptr;
+
 
 void setup() {
-  delay(200);
+  delay(2000);
+  Serial.begin(9600);
   //pinMode(DATA_PIN, OUTPUT);
   controller.init();
+  // Serial.println("Inited controller");
   controller.addStrip(0,10);
-  Serial.begin(9600);
+  controller.addStrip(1,1);
+  controller.addStrip(2,1);
+  controller.addStrip(3,1);
+  // Serial.println("Added strip");
+  controller.setAllInStrip(0, CRGB::White);
+  //controller.setAllInStrip(1, CRGB::White);
+  // Serial.println("set all to white");
+  // c = &(FastLED.addLeds<WS2813, 5, RGB>(l, 0));
+  // uint8_t n = 10;
+  // l = (CRGB*) calloc(n, sizeof(CRGB));
+  // c->setLeds(l, n);
+  // c2 = &(FastLED.addLeds<WS2813, 5, RGB>(l2, 0));
+  // l2 = (CRGB*) calloc(n, sizeof(CRGB));
+  // c2->setLeds(l2, n);
 }
 
 int i = 0;
@@ -33,8 +52,14 @@ void loop() {
   //     leds[whiteLed] = CRGB::Black;
   //  }
   delay(100);
+  Serial.println("Alive");
   //FastLED.show();
-  Serial.println(i);
-  i++;
-  Serial.println((uint32_t) controller.getStrip(0), HEX);
+  controller.printStrip(0);
+  controller.printStrip(1);
+  controller.printStrip(2);
+  controller.printStrip(3);
+  FastLED.show();
+  // Serial.println(i);
+  // i++;
+  // Serial.println((uint32_t) controller.getStrip(0), HEX);
 }
