@@ -29,7 +29,7 @@ class LightController
   CLEDController* m_controllers[4];
   vector<LEDRange, 1> m_ranges;
   CRGB* m_leds[4] = {nullptr, nullptr, nullptr, nullptr};
-  uint8_t m_num_leds[4] = {1,1,1,1};
+  uint8_t m_num_leds[4] = {0,0,0,0};
 };
 
 } // namespace highland

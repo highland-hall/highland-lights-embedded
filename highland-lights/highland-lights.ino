@@ -15,9 +15,9 @@ void setup() {
   controller.init();
   // Serial.println("Inited controller");
   controller.addStrip(0,10);
-  controller.addStrip(1,1);
-  controller.addStrip(2,1);
-  controller.addStrip(3,1);
+  //controller.addStrip(1,1);
+  //controller.addStrip(2,1);
+  //controller.addStrip(3,1);
   // Serial.println("Added strip");
   controller.setAllInStrip(0, CRGB::White);
   //controller.setAllInStrip(1, CRGB::White);
