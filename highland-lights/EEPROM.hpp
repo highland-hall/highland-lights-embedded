@@ -1,71 +1,45 @@
 #pragma once
-#include "stdint.h"
+#include <stdint.h>
 
 namespace highland
 {
+///@brief Basic EEPROM
 template<typename Driver, uint32_t Size>
 class EEPROM
 {
  public:
+  EEPROM(Driver* driver):
+    m_driver{driver}
+  {
+  }
+
   template<typename T>
-  class EEPROMRef
+  void read(uint32_t address, T* op)
   {
-   public:
-    //Access/read members.
-    T operator*() const                  { return 0; } // TODO
-    operator const T() const       { return **this; }
-
-    //Assignment/write members.
-    EEPROMRef& operator=( const EEPROMRef &ref ) { return *this = *ref; }
-    EEPROMRef& operator=( T in )       { return 0 ,*this;  } // todo
-
-    EEPROMRef& update( uint8_t in )          { return  in != *this ? *this = in : *this; }    
-
-   private:
-
-    uint32_t index;
+    uint8_t* ptr = (uint8_t*) op;
+    size_t size_of_t = sizeof(T);
+    m_driver->read(address, ptr, size_of_t);
   }
-  
+
   template<typename T>
-  class EEPROMPtr
+  void write(uint32_t address, T op)
   {
-   public:
-    operator const uint32_t() const                 { return address; }
-    EEPROMPtr&   operator=( uint32_t in )           { return address = in, *this; }
-    bool         operator!=( const EEPROMPtr &ptr ) { return address != ptr.address; }
-    bool         operator==( const EEPROMPtr &ptr ) { return address == ptr.address; }
-    EEPROMRef<T> operator*()                        { return address; }
-    
-    EEPROMPtr& operator++()                 { return address += t_size, *this; }
-    EEPROMPtr& operator--()                 { return address -= t_size, *this; }
-    EEPROMPtr operator++ (int)              { return address += t_size; }
-    EEPROMPtr operator-- (int)              { return address -= t_size; }
-
-   private:
-    static constexpr AddrSize t_size = sizeof(T);
-    
-    uint32_t address;
+    size_t size_of_t = sizeof(T);
+    uint32_t last_addr = address + size_of_t;
+    if(address & 0x0000ffff == last_addr & 0x0000ffff)
+    {
+      m_driver->pageWrite(address, &op, size_of_t);
+    }
+    m_driver->write(address, &op, size_of_t);
   }
 
-  static uint8_t init()
+  template<typename T>
+  void update(uint32_t address, T op)
   {
-    
-  }
-  
-  static void read(uint16_t address, T* t)
-  {
-    uint8_t* ptr = (uint8_t*) t;
-    m_driver->read()
-  }
-
-  static void write(uint16_t address, uint8_t )
-  {
-    
-  }
-
-  static void update(uint16_t address)
-  {
-    
-  }
+    size_t size_of_t = sizeof(T);
+    m_driver->update(address, &op, size_of_t);
+  }  
+ private:
+  Driver* m_driver;
 };
 } // namespace highland

@@ -10,7 +10,7 @@ namespace highland
 // @tparam T          Type of data stored in vector
 // @tparam START_SIZE initial size of vector
 // @tparam MAX_SIZE   max size of vector. generally small as this is intended for embedded use.
-template <typename T, uint8_t START_SIZE=1, uint8_t MAX_SIZE=32>
+template <typename T, size_t START_SIZE=1, size_t MAX_SIZE=32>
 class vector
 {
  public:

@@ -20,10 +20,6 @@ void LightController::init()
   pinMode(6, OUTPUT);
   pinMode(7, OUTPUT);
   pinMode(8, OUTPUT);
-  m_leds[0] = (CRGB* ) calloc(1, sizeof(CRGB));
-  m_leds[1] = (CRGB* ) calloc(1, sizeof(CRGB));
-  m_leds[2] = (CRGB* ) calloc(1, sizeof(CRGB));
-  m_leds[3] = (CRGB* ) calloc(1, sizeof(CRGB));
   m_controllers[0] = &(FastLED.addLeds<WS2813, 5, RGB>(m_leds[0], m_num_leds[0]));
   m_controllers[1] = &(FastLED.addLeds<WS2813, 6, RGB>(m_leds[1], m_num_leds[1]));
   m_controllers[2] = &(FastLED.addLeds<WS2813, 7, RGB>(m_leds[2], m_num_leds[2]));
