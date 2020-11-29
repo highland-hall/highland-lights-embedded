@@ -3,10 +3,9 @@
 namespace highland
 {
 EEPROMI2C::EEPROMI2C()
-{
-  
-}
-void read(uint32_t addr, uint8_t* ptr, size_t size)
+{}
+
+void EEPROMI2C::read(uint32_t addr, uint8_t* ptr, size_t size)
 {
   generateHeader(addr, WRITE);
 
@@ -25,7 +24,7 @@ void read(uint32_t addr, uint8_t* ptr, size_t size)
 }
 
 // This is really dumb. please make this auto page write :(
-void write(uint32_t addr, uint8_t* ptr, size_t size)
+void EEPROMI2C::write(uint32_t addr, uint8_t* ptr, size_t size)
 {
   generateHeader(addr, WRITE);
 
@@ -38,7 +37,7 @@ void write(uint32_t addr, uint8_t* ptr, size_t size)
   }
   
 }
-void pageWrite(uint32_t addr, uint8_t* ptr, size_t size)
+void EEPROMI2C::pageWrite(uint32_t addr, uint8_t* ptr, size_t size)
 {
   generateHeader(addr, WRITE);
 
@@ -50,9 +49,18 @@ void pageWrite(uint32_t addr, uint8_t* ptr, size_t size)
   }
   Wire.endTransmission();
 }
+
 /// update is dumb but probably necessary for feature completeness.
-void update(uint32_t addr, uint8_t* ptr, size_t size)
+void EEPROMI2C::update(uint32_t addr, uint8_t* ptr, size_t size)
 {
   generateHeader(addr, READ);
 }
+
+void EEPROMI2C::generateHeader(uint32_t addr, uint8_t rw)
+{
+  m_header[2] = ((uint8_t*) &addr)[0];
+  m_header[1] = ((uint8_t*) &addr)[1];
+  //TODO make first element.
+}
+
 }

@@ -21,6 +21,14 @@ class EEPROM
     m_driver->read(address, ptr, size_of_t);
   }
 
+  template<>
+  void read<String>(uint32_t address, String str, size_t str_len)
+  {
+    uint8_t* ptr = (uint8_t*) op;
+    size_t size_of_t = sizeof(T);
+    m_driver->read(address, ptr, size_of_t);
+  }
+
   template<typename T>
   void write(uint32_t address, T op)
   {
