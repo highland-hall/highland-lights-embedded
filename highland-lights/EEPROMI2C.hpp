@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <stdlib.h>
 
 namespace highland
 {
@@ -18,10 +19,10 @@ class EEPROMI2C
 
   void generateHeader(uint32_t addr, uint8_t rw);
 
-  static uint8_t READ = 0;
-  static uint8_t WRITE = 1;
+  static const uint8_t READ = 0;
+  static const uint8_t WRITE = 1;
 
-  uint8_t m_header[3];
+  uint8_t m_header[3]; ///< Honestly this is ugly as all hell.
   uint32_t m_curr_addr;
-}
+};
 }

@@ -12,15 +12,15 @@ LightsInterface::LightsInterface(LightController* controller):
 
 void LightsInterface::initialize()
 {
-  check_for_wifi_config();
+  checkForWifiConfig();
   if(m_state != WIFI_CONFIGURED)
   {
-    configure_wifi();
+    configureWifi();
   }
-  check_for_light_config();
+  checkForLightConfig();
   if(m_state != LIGHTS_CONFIGURED)
   {
-    configure_lights();
+    configureLights();
   }
 }
 
@@ -36,31 +36,32 @@ InterfaceState LightsInterface::checkForLightConfig()
 
 InterfaceState LightsInterface::configureWifi()
 {
+  int status;
   do
   {
     // Clear wifi connection this is probably not necessary.
-    WiFi.end()
+    WiFi.end();
     // Setup config server 
     WiFiServer config_server(8989);
-    WiFi.beginAP(config_ssid, config_pass);
+    WiFi.beginAP(config_ssid.c_str(), config_pass.c_str());
 
     // Wait for someone to connect to the setup device. Technically there is space for a timing attack here.
-    while(WiFiStatus == WL_AP_CONNECTED)
+    while(WiFi.status() == WL_AP_CONNECTED)
     {
       continue;
     }
 
-    WiFiClient config_client = config_server.availiable();
+    WiFiClient config_client = config_server.available();
 
-    config_client.findUntil(m_wifi_ssid, '\0');
-    config_client.findUntil(m_wifi_pass, '\0');
+    m_wifi_ssid = config_client.readString();
+    m_wifi_pass = config_client.readString();
 
     // TODO save wifi config.
 
     WiFi.end(); // End the access point and attempt to connect to the given router.
 
     // Attempt to connect to the wifi server.
-    int status = WiFi.begin(m_wifi_ssid, m_wifi_pass);
+    status = WiFi.begin(m_wifi_ssid.c_str(), m_wifi_pass.c_str());
     delay(5000);
   } while(status != WL_CONNECTED);
 

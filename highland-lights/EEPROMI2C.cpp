@@ -1,5 +1,8 @@
 #include "EEPROMI2C.hpp"
 #include <Wire.h>
+#include <stdint.h>
+#include <stdlib.h>
+
 namespace highland
 {
 EEPROMI2C::EEPROMI2C()
@@ -9,8 +12,8 @@ void EEPROMI2C::read(uint32_t addr, uint8_t* ptr, size_t size)
 {
   generateHeader(addr, WRITE);
 
-  Wire.beginTransmission();
-  Wire.write(m_header, 3);
+  Wire.beginTransmission(m_header[0]);
+  Wire.write(m_header+1, 3);
   Wire.endTransmission();
   generateHeader(addr, READ);
   Wire.requestFrom(m_header[0], size);
@@ -30,8 +33,8 @@ void EEPROMI2C::write(uint32_t addr, uint8_t* ptr, size_t size)
 
   for(size_t i=0; i < size; i++)
   {
-    Wire.beginTransmission();
-    Wire.write(m_header, 3);
+    Wire.beginTransmission(m_header[0]);
+    Wire.write(m_header+1, 3);
     Wire.write(ptr[i]);
     Wire.endTransmission();
   }
@@ -41,8 +44,8 @@ void EEPROMI2C::pageWrite(uint32_t addr, uint8_t* ptr, size_t size)
 {
   generateHeader(addr, WRITE);
 
-  Wire.beginTransmission();
-  Wire.write(m_header, 3); 
+  Wire.beginTransmission(m_header[0]);
+  Wire.write(m_header+1, 3); 
   for(size_t i=0; i < size; i++)
   {
     Wire.write(ptr[i]);
@@ -61,6 +64,15 @@ void EEPROMI2C::generateHeader(uint32_t addr, uint8_t rw)
   m_header[2] = ((uint8_t*) &addr)[0];
   m_header[1] = ((uint8_t*) &addr)[1];
   //TODO make first element.
+  m_header[0] = 0xa0 | (((((uint8_t*) &addr)[2]) << 1) & 0x02);
+  if(rw == READ)
+  {
+    m_header[0] &= READ;
+  }
+  else
+  {
+    m_header[0] |= WRITE;
+  }
 }
 
 }

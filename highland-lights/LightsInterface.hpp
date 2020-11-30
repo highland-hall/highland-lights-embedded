@@ -24,7 +24,7 @@ class LightsInterface
  public:
   LightsInterface(LightController* controller);
 
-  void initialize()
+  void initialize();
   
   void parseCommand();
  private:
@@ -40,11 +40,11 @@ class LightsInterface
   LightController* m_controller; //< Controller pointer to issue commands through
 
   // Access point details
-  const char config_ssid[33] = HIGHLAND_STR(HIGHLAND_CONFIG_SSID);
-  const char config_pass[64] = HIGHLAND_STR(HIGHLAND_CONFIG_PASS);
+  String config_ssid = HIGHLAND_STR(HIGHLAND_CONFIG_SSID);
+  String config_pass = HIGHLAND_STR(HIGHLAND_CONFIG_PASS);
 
-  char m_wifi_ssid[33];
-  char m_wifi_pass[64];
+  String m_wifi_ssid;
+  String m_wifi_pass;
 
   InterfaceState m_state = START;
 };
