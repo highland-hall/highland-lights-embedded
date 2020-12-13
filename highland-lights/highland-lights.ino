@@ -7,15 +7,17 @@
 #include <WiFiNINA.h>
 #include <Wire.h>
 
+#define WP 20
 
-highland::EEPROMI2C eeprom_driver;
+highland::EEPROMI2C eeprom_driver{WP};
 
 highland::EEPROM<highland::EEPROMI2C, 128000> eeprom{&eeprom_driver};
 
 
 void setup() {
-
+  
 }
 
 void loop() {
+  
 }

@@ -1,11 +1,15 @@
 #include "LightsInterface.hpp"
 #include <WiFiNINA.h>
 
+#define SSID_ADDRESS 2000
+#define PASS_ADDRESS 3000
+
 
 namespace highland
 {
-LightsInterface::LightsInterface(LightController* controller):
-  m_controller{controller}
+LightsInterface::LightsInterface(LightController* controller,  EEPROM<EEPROMI2C, 128000>* eeprom):
+  m_controller{controller},
+  m_eeprom{eeprom}
 {
   
 }

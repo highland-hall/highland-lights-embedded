@@ -22,7 +22,7 @@ enum InterfaceState
 class LightsInterface
 {
  public:
-  LightsInterface(LightController* controller);
+  LightsInterface(LightController* controller, EEPROM<EEPROMI2C, 128000>* eeprom);
 
   void initialize();
   
@@ -39,6 +39,8 @@ class LightsInterface
 
   LightController* m_controller; //< Controller pointer to issue commands through
 
+  EEPROM<EEPROMI2C, 128000>* m_eeprom;
+  
   // Access point details
   String config_ssid = HIGHLAND_STR(HIGHLAND_CONFIG_SSID);
   String config_pass = HIGHLAND_STR(HIGHLAND_CONFIG_PASS);
