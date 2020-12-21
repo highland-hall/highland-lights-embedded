@@ -4,6 +4,8 @@
 #include <cstdint>
 #include "SecretUtils.hpp"
 #include "LightController.hpp"
+#include "EEPROM.hpp"
+#include "EEPROMI2C.hpp"
 
 namespace highland
 {

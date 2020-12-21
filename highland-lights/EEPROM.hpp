@@ -37,11 +37,14 @@ class EEPROM
     uint32_t last_addr = address + size_of_t - 1;
     // @todo(apozharski) please make this smarter. can do multiple page writes instead of multiple single writes.
     // @todo(apozharski) once microchip gets it shit together and tells me why page writes don't work for the first byte I can try to fix this. 
-    // if((address & 0x0001ff00U) == (last_addr & 0x0001ff00U))
-    // {
-    //   m_driver->pageWrite(address, (uint8_t*) (&op), size_of_t);
-    // }
-    m_driver->write(address, (uint8_t*) (&op), size_of_t);
+    if((address & 0x0001ff00U) == (last_addr & 0x0001ff00U))
+    {
+      m_driver->pageWrite(address, (uint8_t*) (&op), size_of_t);
+    }
+    else
+    {
+      m_driver->write(address, (uint8_t*) (&op), size_of_t);
+    }
   }
 
   void write(uint32_t address, char* str, size_t length)
@@ -52,7 +55,10 @@ class EEPROM
     {
       m_driver->pageWrite(address, (uint8_t*) (str), length);
     }
-    m_driver->write(address, (uint8_t*) (&str), length);
+    else
+    {
+      m_driver->write(address, (uint8_t*) (&str), length);
+    }
   }
   
   template<typename T>

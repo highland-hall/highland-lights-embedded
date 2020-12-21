@@ -30,7 +30,38 @@ void LightsInterface::initialize()
 
 InterfaceState LightsInterface::checkForWifiConfig()
 {
+  bool ssid_stored = false;
+  bool pass_stored = false;
+  char ssid[33];
+  char pass[64];
+
+  m_eeprom->read<bool>(SSID_ADDRESS, &ssid_stored);
+  m_eeprom->read<bool>(SSID_ADDRESS, &pass_stored);
+
+  // This is insecure :( but honestly it's a one off. If this gets put somewhere else I'll fix it. 
+  if(ssid_stored && pass_stored)
+  {
+    m_eeprom->read(SSID_ADDRESS + sizeof(bool), ssid, 33);
+    m_eeprom->read(SSID_ADDRESS + sizeof(bool), pass, 64);
+  }
+  else
+  {
+    return InterfaceState::WAITING_FOR_WIFI_CONFIG;
+  }
+
+  int status = WiFi.begin(ssid, pass);
+  delay(5000);
+
+  if(status == WL_CONNECTED)
+  {
+    m_state = InterfaceState::WIFI_CONFIGURED;
+  }
+  else
+  {
+    WiFi.end();
+  }
   
+  return m_state;
 }
 
 InterfaceState LightsInterface::checkForLightConfig()
@@ -48,18 +79,32 @@ InterfaceState LightsInterface::configureWifi()
     // Setup config server 
     WiFiServer config_server(8989);
     WiFi.beginAP(config_ssid.c_str(), config_pass.c_str());
-
+    Serial.println("Started AP with SSID: ");
+    Serial.println(config_ssid);
     // Wait for someone to connect to the setup device. Technically there is space for a timing attack here.
-    while(WiFi.status() == WL_AP_CONNECTED)
+    while(WiFi.status() != WL_AP_CONNECTED)
     {
       continue;
     }
 
     WiFiClient config_client = config_server.available();
 
-    m_wifi_ssid = config_client.readString();
-    m_wifi_pass = config_client.readString();
+    Serial.println("Got connection");
 
+    while(!config_client.available())
+    {
+      continue;
+    }
+    m_wifi_ssid = config_client.readString();
+    Serial.println("Read ssid");
+
+    while(!config_client.available())
+    {
+      continue;
+    }
+    m_wifi_pass = config_client.readString();
+    Serial.println("Read pass");
+    
     // TODO save wifi config.
 
     WiFi.end(); // End the access point and attempt to connect to the given router.
