@@ -6,6 +6,7 @@
 #include "LightController.hpp"
 #include "EEPROM.hpp"
 #include "EEPROMI2C.hpp"
+#include "HLProto.hpp"
 
 namespace highland
 {
@@ -47,8 +48,7 @@ class LightsInterface
   String config_ssid = HIGHLAND_STR(HIGHLAND_CONFIG_SSID);
   String config_pass = HIGHLAND_STR(HIGHLAND_CONFIG_PASS);
 
-  String m_wifi_ssid;
-  String m_wifi_pass;
+  proto::NetConfig m_net_config;
 
   InterfaceState m_state = START;
 };
