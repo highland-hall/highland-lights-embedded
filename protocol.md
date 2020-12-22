@@ -1,7 +1,7 @@
 # Highland Lights Protocol
 
 ## Header 
-Each Protocol message is sent with a 2 byte version header. The current 16 bit version number is `0x0000`. This is followed by a message type (a single byte) which are the following:
+Each Protocol message is sent with a 1 byte version header. The current 8 bit version number is `0x00`. This is followed by a message type (a single byte) which are the following:
 * `0x00` Nack
 * `0x01` Ack
 * `0x02` network config (containing wifi ssid and pass)
