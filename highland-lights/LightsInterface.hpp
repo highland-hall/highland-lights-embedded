@@ -7,6 +7,7 @@
 #include "EEPROM.hpp"
 #include "EEPROMI2C.hpp"
 #include "HLProto.hpp"
+#include <WiFiNINA.h>
 
 namespace highland
 {
@@ -29,7 +30,7 @@ class LightsInterface
 
   void initialize();
   
-  void parseCommand();
+  void handleConnection();
  private:
 
   InterfaceState checkForWifiConfig();
@@ -43,13 +44,15 @@ class LightsInterface
   LightController* m_controller; //< Controller pointer to issue commands through
 
   EEPROM<EEPROMI2C, 128000>* m_eeprom;
+
+  WiFiServer m_server{8989};
   
   // Access point details
   String config_ssid = HIGHLAND_STR(HIGHLAND_CONFIG_SSID);
   String config_pass = HIGHLAND_STR(HIGHLAND_CONFIG_PASS);
 
   proto::NetConfig m_net_config;
-
+  
   InterfaceState m_state = START;
 };
 

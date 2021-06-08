@@ -40,7 +40,7 @@ class vector
     m_size++;
   }
 
-  uint8_t size()
+  size_t size()
   {
     return m_size;
   }
@@ -57,8 +57,8 @@ class vector
   
  private:
   T* m_data;
-  uint8_t m_size;
-  uint8_t m_max_size;
+  size_t m_size;
+  size_t m_max_size;
 };
 } // namespace highland
 #endif // HIGHLAND_LIGHT_CONTROLLER_HPP

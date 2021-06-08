@@ -7,7 +7,7 @@
 
 namespace highland
 {
-struct LEDRange
+struct __attribute__((packed)) LEDRange
 {
   uint8_t  strip_index;
   uint16_t start_index;
@@ -26,12 +26,15 @@ class LightController
 
   // Set ranges to different effects/colors
 
-  void clearRange(size_t range_idx);
-  void setColorRange(size_t range_idx, CRGB color);
-  void setColorRange(size_t range_in, CHSV color);
+  int clearRange(size_t range_idx);
+  int setColorRange(size_t range_idx, CRGB color);
+  int setColorRange(size_t range_idx, CHSV color);
   // @todo(apozharski) other solid set colors
   
   void printStrip(uint8_t strip_index);
+  void show() { FastLED.show(); };
+
+  static const uint8_t VERSION = 1;
  private:
   CLEDController* m_controllers[4];
   vector<LEDRange, 1> m_ranges;
