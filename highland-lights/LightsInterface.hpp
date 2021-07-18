@@ -8,6 +8,7 @@
 #include "EEPROMI2C.hpp"
 #include "HLProto.hpp"
 #include <WiFiNINA.h>
+#include <ArduinoMDNS.h>
 
 namespace highland
 {
@@ -17,6 +18,7 @@ enum InterfaceState
   START,
   WAITING_FOR_WIFI_CONFIG,
   WIFI_CONFIGURED,
+  SERVICE_STARTED,
   WAITING_FOR_LIGHTS_CONFIG,
   LIGHTS_CONFIGURED  
 };
@@ -39,6 +41,8 @@ class LightsInterface
   
   InterfaceState configureWifi();
 
+  InterfaceState registerService();
+
   InterfaceState configureLights();
 
   LightController* m_controller; //< Controller pointer to issue commands through
@@ -46,6 +50,10 @@ class LightsInterface
   EEPROM<EEPROMI2C, 128000>* m_eeprom;
 
   WiFiServer m_server{8989};
+
+  WiFiUDP m_udp;
+  
+  MDNS m_mdns;
   
   // Access point details
   String config_ssid = HIGHLAND_STR(HIGHLAND_CONFIG_SSID);
