@@ -15,7 +15,8 @@ Each Protocol message is sent with a 1 byte version header. The current 8 bit ve
 * `0x0A` Finalize light config
 * `0x10` Set Range RGB
 * `0x11` Set Range HSV
-
+* `0x12` Set Strip RGB
+* `0x13` Set Strip HSV
 
 
 ## Config messages
@@ -66,4 +67,16 @@ Sets a given range to a given RGB Value
 
 ```
 |range_idx(4)|H(1)|S(1)|V(1)|
+```
+### Set Strip RGB
+Sets a given range to a given RGB Value
+
+```
+|strip_idx(1)|R(1)|G(1)|B(1)|
+```
+### Set Strip HSV
+Sets a given range to a given RGB Value
+
+```
+|strip_idx(4)|H(1)|S(1)|V(1)|
 ```

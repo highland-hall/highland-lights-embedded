@@ -99,11 +99,21 @@ int LightController::setColorRange(size_t range_idx, CHSV color)
   return 0;
 }
 
-void LightController::setAllInStrip(uint8_t strip_index, CRGB color)
+void LightController::setAllInStripRGB(uint8_t strip_index, CRGB color)
 {
   for(uint8_t i = 0; i < m_num_leds[strip_index]; i++)
   {
     m_leds[strip_index][i] = color;
+  }
+}
+
+void LightController::setAllInStripHSV(uint8_t strip_index, CHSV color)
+{
+  CRGB rgb_color;
+  hsv2rgb_rainbow(color, rgb_color);
+  for(uint8_t i = 0; i < m_num_leds[strip_index]; i++)
+  {
+    m_leds[strip_index][i] = rgb_color;
   }
 }
 

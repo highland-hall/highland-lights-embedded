@@ -22,8 +22,9 @@ class LightController
   int   addStrip(uint8_t strip_index, uint8_t num_leds);
   int   addRange(LEDRange range);
   CRGB* getStrip(uint8_t idx) {return m_leds[idx];};  
-  void setAllInStrip(uint8_t strip_index, CRGB color);
-
+  void setAllInStripRGB(uint8_t strip_index, CRGB color);
+  void setAllInStripHSV(uint8_t strip_index, CHSV color);
+  
   // Set ranges to different effects/colors
 
   int clearRange(size_t range_idx);

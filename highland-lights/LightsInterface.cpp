@@ -218,8 +218,6 @@ InterfaceState LightsInterface::configureLights()
         // @todo return nack and disconnect.
         continue;
       }
-      Serial.println("Got Version");
-
     
       // @todo error handling
       uint8_t msg_type;
@@ -236,10 +234,10 @@ InterfaceState LightsInterface::configureLights()
          Serial.println("Got test strip");
          config_client.readBytes(&strip_index, 1);
          Serial.println(strip_index);
-         m_controller->setAllInStrip(strip_index, CRGB::White);
+         m_controller->setAllInStripRGB(strip_index, CRGB::White);
          m_controller->show();
          delay(5000);
-         m_controller->setAllInStrip(strip_index, CRGB::Black);
+         m_controller->setAllInStripRGB(strip_index, CRGB::Black);
          m_controller->show();
          break;
        case HIGHLAND_LIGHTS_ADD_STRIP :
@@ -269,6 +267,7 @@ InterfaceState LightsInterface::configureLights()
          break;
        case HIGHLAND_LIGHTS_FINALIZE_CONFIG:
          // @todo finalize write
+         Serial.println("Got Finalize");
          finalized = true;
          break;
       }
@@ -286,22 +285,27 @@ InterfaceState LightsInterface::configureLights()
 
 void LightsInterface::handleConnection()
 {
-  // Run the mdns, how this works is MAGIC
-  m_mdns.run();
-  
+
   // Do our own processing
   WiFiClient client;
   do
   {
+    // Run the mdns, how this works is MAGIC
+    m_mdns.run();
     client = m_server.available();
+    delay(50);
   } while(!client);
-
+  Serial.println("client connected");
+  
   while(client.connected())
   {
+    delay(50);
+    m_mdns.run();
     if(!client.available())
     {
       continue;
     }
+    Serial.println("Got availiable bytes");
     
 
     // @todo error handling
@@ -312,7 +316,6 @@ void LightsInterface::handleConnection()
       // @todo return nack and disconnect.
       continue;
     }
-    Serial.println("Got Version");
 
     
     // @todo error handling
@@ -320,12 +323,13 @@ void LightsInterface::handleConnection()
     client.readBytes(&msg_type, 1);
 
     size_t range_index;
+    uint8_t strip_index;
     uint8_t red, green, blue, hue, saturation,value;
     
     switch(msg_type)
     {
      case HIGHLAND_LIGHTS_SET_RANGE_RGB:
-       Serial.println("Got test range");
+       Serial.println("Got set range rgb");
        client.readBytes((char*) &range_index, sizeof(size_t));
        client.readBytes(&red, 1);
        client.readBytes(&green, 1);
@@ -334,7 +338,7 @@ void LightsInterface::handleConnection()
        m_controller->setColorRange(range_index, CRGB(red,green,blue));
        break;
      case HIGHLAND_LIGHTS_SET_RANGE_HSV :
-       Serial.println("Got test range");
+       Serial.println("Got set range hsv");
        client.readBytes((char*) &range_index, sizeof(size_t));
        client.readBytes(&hue, 1);
        client.readBytes(&saturation, 1);
@@ -342,9 +346,28 @@ void LightsInterface::handleConnection()
        
        m_controller->setColorRange(range_index, CHSV(hue,saturation,value));
        break;
+     case HIGHLAND_LIGHTS_SET_STRIP_RGB:
+       Serial.println("Got set strip rgb");
+       client.readBytes((char*) &strip_index, 1);
+       client.readBytes(&red, 1);
+       client.readBytes(&green, 1);
+       client.readBytes(&blue, 1);
+
+       m_controller->setAllInStripRGB(strip_index, CRGB(red,green,blue));
+       break;
+     case HIGHLAND_LIGHTS_SET_STRIP_HSV:
+       Serial.println("Got set strip hsv");
+       client.readBytes((char*) &strip_index, 1);
+       client.readBytes(&hue, 1);
+       client.readBytes(&saturation, 1);
+       client.readBytes(&value, 1);
+
+       m_controller->setAllInStripHSV(strip_index, CHSV(hue,saturation,value));
+       break;
     }
-    m_controller->show();
-    
+    m_controller->show(); 
   }
+  client.stop();
+  Serial.println("Client Closed");
 }
 }
