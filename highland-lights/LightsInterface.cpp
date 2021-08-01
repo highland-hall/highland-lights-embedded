@@ -233,7 +233,6 @@ InterfaceState LightsInterface::configureLights()
        case HIGHLAND_LIGHTS_TEST_STRIP :
          Serial.println("Got test strip");
          config_client.readBytes(&strip_index, 1);
-         Serial.println(strip_index);
          m_controller->setAllInStripRGB(strip_index, CRGB::White);
          m_controller->show();
          delay(5000);
@@ -249,12 +248,13 @@ InterfaceState LightsInterface::configureLights()
          break;
        case HIGHLAND_LIGHTS_TEST_RANGE:
          Serial.println("Got test range");
+         config_client.readBytes(&strip_index, 1);
          config_client.readBytes((char*) &range_index, sizeof(size_t));
        
-         m_controller->setColorRange(range_index, CRGB::White);
+         m_controller->setColorRange(strip_index, range_index, CRGB::White);
          m_controller->show();
          delay(5000);
-         m_controller->setColorRange(range_index, CRGB::Black);
+         m_controller->setColorRange(strip_index, range_index, CRGB::Black);
          m_controller->show();
          break;
        case HIGHLAND_LIGHTS_ADD_RANGE:
@@ -330,21 +330,23 @@ void LightsInterface::handleConnection()
     {
      case HIGHLAND_LIGHTS_SET_RANGE_RGB:
        Serial.println("Got set range rgb");
+       client.readBytes((char*) &strip_index, 1);
        client.readBytes((char*) &range_index, sizeof(size_t));
        client.readBytes(&red, 1);
        client.readBytes(&green, 1);
        client.readBytes(&blue, 1);
        
-       m_controller->setColorRange(range_index, CRGB(red,green,blue));
+       m_controller->setColorRange(strip_index, range_index, CRGB(red,green,blue));
        break;
      case HIGHLAND_LIGHTS_SET_RANGE_HSV :
        Serial.println("Got set range hsv");
+       client.readBytes((char*) &strip_index, 1);
        client.readBytes((char*) &range_index, sizeof(size_t));
        client.readBytes(&hue, 1);
        client.readBytes(&saturation, 1);
        client.readBytes(&value, 1);
        
-       m_controller->setColorRange(range_index, CHSV(hue,saturation,value));
+       m_controller->setColorRange(strip_index, range_index, CHSV(hue,saturation,value));
        break;
      case HIGHLAND_LIGHTS_SET_STRIP_RGB:
        Serial.println("Got set strip rgb");

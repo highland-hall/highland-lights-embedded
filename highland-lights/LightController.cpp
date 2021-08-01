@@ -43,17 +43,17 @@ int LightController::addStrip(uint8_t strip_index, uint8_t num_leds)
 
 int LightController::addRange(LEDRange range)
 {
-  return m_ranges.push_back(range);
+  return m_ranges[range.strip_index].push_back(range);
 }
 
-int LightController::clearRange(size_t range_idx)
+int LightController::clearRange(uint8_t strip_idx, size_t range_idx)
 {
-  if(range_idx >= m_ranges.size())
+  if(range_idx >= m_ranges[strip_idx].size())
   {
     return -1;
   }
 
-  const LEDRange& range = m_ranges[range_idx];
+  const LEDRange& range = m_ranges[strip_idx][range_idx];
 
   for(uint8_t i = range.start_index; i <= range.end_index; i++)
   {
@@ -63,14 +63,14 @@ int LightController::clearRange(size_t range_idx)
   return 0;
 }
 
-int LightController::setColorRange(size_t range_idx, CRGB color)
+int LightController::setColorRange(uint8_t strip_idx, size_t range_idx, CRGB color)
 {
-  if(range_idx >= m_ranges.size())
+  if(range_idx >= m_ranges[strip_idx].size())
   {
     return -1;
   }
 
-  const LEDRange& range = m_ranges[range_idx];
+  const LEDRange& range = m_ranges[strip_idx][range_idx];
 
   for(uint8_t i = range.start_index; i <= range.end_index; i++)
   {
@@ -80,14 +80,14 @@ int LightController::setColorRange(size_t range_idx, CRGB color)
   return 0;
 }
 
-int LightController::setColorRange(size_t range_idx, CHSV color)
+int LightController::setColorRange(uint8_t strip_idx, size_t range_idx, CHSV color)
 {
-  if(range_idx >= m_ranges.size())
+  if(range_idx >= m_ranges[strip_idx].size())
   {
     return -1;
   }
 
-  const LEDRange& range = m_ranges[range_idx];
+  const LEDRange& range = m_ranges[strip_idx][range_idx];
   CRGB rgb_color;
   hsv2rgb_rainbow(color, rgb_color);
   

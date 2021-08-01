@@ -51,7 +51,7 @@ Add a strip with a given index and number of leds
 This is used to illuminate an entire strip to test.
 
 ```
-|range_idx(4)|
+|strip_idx(1)|range_idx(4)|
 ```
 ### Finalize Light config
 Finalizes the light config and stores it to eeprom on the controller. Ends config.
@@ -60,13 +60,13 @@ Finalizes the light config and stores it to eeprom on the controller. Ends confi
 Sets a given range to a given RGB Value
 
 ```
-|range_idx(4)|R(1)|G(1)|B(1)|
+|strip_idx(1)|range_idx(4)|R(1)|G(1)|B(1)|
 ```
 ### Set Range HSV
 Sets a given range to a given RGB Value
 
 ```
-|range_idx(4)|H(1)|S(1)|V(1)|
+|strip_idx(1)|range_idx(4)|H(1)|S(1)|V(1)|
 ```
 ### Set Strip RGB
 Sets a given range to a given RGB Value
